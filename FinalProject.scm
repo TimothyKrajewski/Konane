@@ -1,6 +1,7 @@
 #lang scheme
 (#%require r5rs/init)
 
+;;This is the full board that we are starting with
 (define (board)
   (vector
      (list->vector '(X O X O X O X O) )
@@ -14,6 +15,7 @@
   )
 )
 
+;;This is a fully empty board
 (define (EmptyBoard)
   (vector
      (list->vector '(- - - - - - - -) )
