@@ -13,3 +13,16 @@
      (list->vector '(O X O X O X O X) )
   )
 )
+
+(define (EmptyBoard)
+  (vector
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+     (list->vector '(- - - - - - - -) )
+  )
+)
