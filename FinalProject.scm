@@ -1,3 +1,5 @@
+#lang scheme
+(#%require r5rs/init)
 ;Tim Krajewski
 ;Chris Strebenz 
 ;Kevin Ackerman
@@ -455,23 +457,23 @@
       (if (putpiece currState x1 y1 '-)
        currState)
       (let (
-            (vl (if (= x1 x2)
+            (temp1 (if (= x1 x2)
                     (if (< y1 y2) y1 y2)
                     (if (< x1 x2) x1 x2)))
-            (vg (if (= x1 x2)
+            (temp2 (if (= x1 x2)
                     (if (>= y1 y2) y1 y2)
                     (if (>= x1 x2) x1 x2)))
-            (cl (if (= x1 x2)
+            (temp3 (if (= x1 x2)
                     (if (< y1 y2) x1 x2)
                     (if (< x1 x2) y1 y2)))
-            (cg (if (= x1 x2)
+            (temp4 (if (= x1 x2)
                     (if (>= y1 y2) x1 x2)
                     (if (>= x1 x2) y1 y2))))
-        (clear (putpiece currState (if (= x1 x2) cl vl) (if (= x1 x2) vl cl) '-)
-                   (if (= x1 x2) cl (+ 1 vl))
-                   (if (= x1 x2) (+ 1 vl) cl)
-                   (if (= x1 x2) cg vg)
-                   (if (= x1 x2) vg cg)))))
+        (clear (putpiece currState (if (= x1 x2) temp3 temp1) (if (= x1 x2) temp1 temp3) '-)
+                   (if (= x1 x2) temp3 (+ 1 temp1))
+                   (if (= x1 x2) (+ 1 temp1) temp3)
+                   (if (= x1 x2) temp4 temp2)
+                   (if (= x1 x2) temp2 temp4)))))
 
 ;If the computer goes first, asks the computer player for combiner, then the opponent player for combiner
 (define (fMv)
@@ -498,11 +500,11 @@
     (putpiece (clear currState (caar dp) (cadar dp) (caadr dp) (cadadr dp)) (caadr dp) (cadadr dp) p)))
 
 ;Asks the user for combiner and reads the combiner, performing a series of checks for valid combiner
-(define (inputnum n caller is-first-move)
+(define (inputnum n caller firstMove)
   (list (cond
           ((display (string-append "X" n ": "))
            (let ((combiner (read)))
-             (if is-first-move
+             (if firstMove
                  (if (not (integer? combiner)) (notInt caller)
                      (if (or (< combiner 1) (> combiner 8)) (NotInBounds n caller)
                          (if (not (or (= combiner 1) (= combiner 8) (= combiner 4) (= combiner 5))) (firstMoveCheck caller) (- combiner 1))))
@@ -510,18 +512,11 @@
         (cond
           ((display (string-append "Y" n ": "))
            (let ((combiner (read)))
-             (if is-first-move
+             (if firstMove
                  (if (not (integer? combiner)) (notInt caller)
                      (if (or (< combiner 1) (> combiner 8)) (NotInBounds n caller)
                          (if (not (or (= combiner 1) (= combiner 8) (= combiner 4) (= combiner 5))) (firstMoveCheck caller) (- 8 combiner))))
                  (if (integer? combiner) (- 8 combiner) combiner)))))))
-
-
-
-
-;Determines whether there are no possible moves on the currState for a player
-(define (endGame currState turn)
-  (if (= (length (evalMoves currState turn 0 '())) 0) #t #f))
 
 ;Prints the currState, then either performs the computer's move or asks for and performs the opponent's move
 (define (gamer currState turn human CPU)
@@ -535,10 +530,9 @@
           (if (display (string-append "Your Turn: " "\n"))
               (validMove currState turn human CPU)))))
 
-
-
-
-
+;Determines whether there are no possible moves on the currState for a player
+(define (endGame currState turn)
+  (if (= (length (evalMoves currState turn 0 '())) 0) #t #f))
 
 ;Runs the entire game from the start to end
 (define (StartGame)
